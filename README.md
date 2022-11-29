@@ -1,4 +1,5 @@
 # pokedex
+![image](https://user-images.githubusercontent.com/81152624/204555390-d2c08308-97fd-4d98-bbef-f1149675775e.png)
 
 ## Project setup
 ```
