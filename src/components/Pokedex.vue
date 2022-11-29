@@ -1,0 +1,533 @@
+<template>
+  <v-container>
+    <v-row class="mb-n10">
+      <v-col cols="1"> </v-col>
+      <v-col class="d-flex align-center justify-center" cols="4">
+        <v-text-field
+          v-model="search"
+          label="Nom du pokémon ou son ID"
+          solo
+          shaped
+          hide-details
+          :disabled="loading"
+          :loading="loading"
+          @keyup.enter="findByNameOrID"
+        ></v-text-field>
+      </v-col>
+      <v-col cols="2" class="mt-1">
+        <v-btn
+          @click="findByNameOrID"
+          large
+          color="#DC0A2D"
+          :loading="loading"
+          :disabled="!search"
+        >
+          Recherche</v-btn
+        >
+      </v-col>
+    </v-row>
+    <!-- pokedex -->
+    <v-row class="d-flex justify-center mb-n14">
+      <div id="pokedex">
+        <div class="circles-container" v-if="loading">
+          <div class="circle white"></div>
+        </div>
+        <img src="../assets/pokedex.png" width="1000vh" />
+        <div id="cry">
+          <v-tooltip top color="warning">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                v-on="on"
+                outlined
+                small
+                color="error"
+                :disabled="!pokemon.name"
+                @click="pokemonCry"
+              >
+                <v-icon>mdi-play-circle-outline</v-icon>
+                Crie</v-btn
+              >
+            </template>
+            <span>Entendre le pokémon</span>
+          </v-tooltip>
+        </div>
+        <div id="pokemon">
+          <a :href="url(pokemon.name)" target="_blank">
+            <img :src="pokemon.image" height="170px" />
+          </a>
+        </div>
+        <!-- Button mute -->
+        <!-- TODO créer un composant pour le bouton mute -->
+        <div id="mute" @click="mute">
+          <div v-if="muteOrNot">
+            <v-tooltip top color="warning">
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon v-bind="attrs" v-on="on"> mdi-volume-off</v-icon>
+              </template>
+              <span>Allumer le son</span>
+            </v-tooltip>
+          </div>
+          <div v-else>
+            <v-tooltip top color="warning">
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon v-bind="attrs" v-on="on"> mdi-volume-high</v-icon>
+              </template>
+              <span>Couper le son</span>
+            </v-tooltip>
+          </div>
+        </div>
+        <!-- informations -->
+        <div id="infos">
+          <div v-if="pokemonOrNot">
+            <div v-for="stat in pokemon.stats" :key="stat.id">
+              - {{ firstLetterUpperCase(stat.stat.name) }} =
+              {{ stat.base_stat }} pt
+              <br />
+              <template>
+                <v-progress-linear
+                  rounded
+                  buffer-value="0"
+                  stream
+                  max="140"
+                  :value="stat.base_stat"
+                  color="black"
+                ></v-progress-linear>
+              </template>
+            </div>
+          </div>
+          <div else>
+            <h2>
+              {{ message }}
+            </h2>
+          </div>
+        </div>
+        <div id="pokemonId" v-if="pokemon.id > 0">
+          <v-card class="pa-2 mt-1" flat> ID : {{ pokemon.id }} </v-card>
+        </div>
+        <div id="pokemonName">
+          <h3>{{ firstLetterUpperCase(pokemon.name) }}</h3>
+        </div>
+
+        <!-- Button reset -->
+        <v-tooltip top color="warning">
+          <template v-slot:activator="{ on, attrs }">
+            <button id="reset" v-bind="attrs" v-on="on" @click="reset"></button>
+          </template>
+          <span>Recommencer</span>
+        </v-tooltip>
+        <v-tooltip top color="warning">
+          <template v-slot:activator="{ on, attrs }">
+            <button
+              id="btn-right"
+              v-bind="attrs"
+              v-on="on"
+              @click="nextPoke"
+            ></button>
+          </template>
+          <span>Suivant</span>
+        </v-tooltip>
+        <v-tooltip top color="warning">
+          <template v-slot:activator="{ on, attrs }">
+            <button
+              id="btn-left"
+              v-bind="attrs"
+              v-on="on"
+              :disabled="pokemon.id === 1 || pokemon.id === 0"
+              @click="previusPoke"
+            ></button>
+          </template>
+          <span>Précédent</span>
+        </v-tooltip>
+        <v-tooltip top color="warning">
+          <template v-slot:activator="{ on, attrs }">
+            <button
+              id="btn-random"
+              v-bind="attrs"
+              v-on="on"
+              @click="randomPokemon"
+            ></button>
+          </template>
+          <span>Pokémon au hasard</span>
+        </v-tooltip>
+        <div id="type1">
+          <a
+            :href="`https://pokemon.fandom.com/wiki/${pokemon.type1}_type`"
+            target="_blank"
+          >
+            <img height="25px" :src="colorBadge(pokemon.type1)" />
+          </a>
+        </div>
+        <div id="type2">
+          <a
+            :href="`https://pokemon.fandom.com/wiki/${pokemon.type2}_type`"
+            target="_blank"
+          >
+            <img height="25px" :src="colorBadge(pokemon.type2)" />
+          </a>
+        </div>
+      </div>
+    </v-row>
+    <v-row>
+      <v-col class="d-flex align-center justify-center mt-0" cols="12">
+        <a href="https://github.com/bouboudev" target="_blank">
+          <v-card class="pt-1 px-2" elevation="12">
+            <h2>Pokédex de <span class="red--text"> Bouzid KRITA </span></h2>
+          </v-card>
+        </a>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+import axios from "axios";
+export default {
+  name: "PokeDex",
+  data: () => ({
+    pokemon: {
+      name: "",
+      id: 0,
+      image: "",
+      stats: [],
+      type1: "",
+      type2: "",
+    },
+    openButtonSound: require("../assets/songs/open_button.wav"),
+    openWrongSound: require("../assets/songs/wrong.mp3"),
+    openRightSound: require("../assets/songs/right.wav"),
+    search: "",
+    stats: [],
+    message: "",
+    pokemonOrNot: true,
+    loading: false,
+    muteOrNot: false,
+  }),
+  methods: {
+    findByNameOrID() {
+      this.buttonSong();
+      const search = this.search.toLowerCase();
+      this.loading = true;
+      this.find(search);
+    },
+    async find(parameter) {
+      this.pokemon.image =
+        "https://thumbs.gfycat.com/DampSpanishCleanerwrasse-size_restricted.gif";
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await axios
+        .get("https://pokeapi.co/api/v2/pokemon/" + parameter)
+        .then((response) => {
+          this.url(this.pokemon.name);
+          this.pokemonOrNot = true;
+          this.message = "";
+          this.stats = response.data.stats;
+          this.loading = false;
+          //objet pokemon
+          this.pokemon = response.data;
+          //remplir la barre de recherche avec le nom du pokemon
+          this.search = this.pokemon.name;
+          this.pokemon.image =
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/" +
+            response.data.id +
+            ".png";
+          this.pokemon.type1 = response.data.types[0].type.name;
+          //gérer les pokémons avec 2 types
+          if (response.data.types[1]) {
+            this.pokemon.type2 = response.data.types[1].type.name;
+          } else {
+            this.pokemon.type2 = "";
+          }
+          this.rightSong();
+        })
+        .catch((err) => {
+          this.wrongSong();
+          console.error(err);
+          this.reset();
+          this.pokemon.image =
+            "https://steamuserimages-a.akamaihd.net/ugc/171539431148961188/2EBEBEFB36892776146A68E8BF7537B2B68AE43B/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false";
+          this.pokemonOrNot = false;
+          this.message = "Pokémon introuvable";
+          this.loading = false;
+        });
+    },
+    firstLetterUpperCase(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    },
+    reset() {
+      this.pokemon = {
+        name: "",
+        id: 0,
+        image: "",
+        stats: [],
+        type1: "",
+        type2: "",
+      };
+      this.pokemon.image =
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Pokebola-pokeball-png-0.png/800px-Pokebola-pokeball-png-0.png";
+      this.message = "";
+      this.pokemonOrNot = true;
+      this.loading = false;
+      this.search = "";
+    },
+    nextPoke() {
+      this.buttonSong();
+      this.loading = true;
+      this.find(this.pokemon.id + 1);
+    },
+    previusPoke() {
+      this.buttonSong();
+      this.loading = true;
+      //eviter les pokémons négatifs
+      if (this.pokemon.id == 1) {
+        return;
+      }
+      //sinon on peut aller au pokémon précédent
+      this.find(this.pokemon.id - 1);
+    },
+    randomPokemon() {
+      this.buttonSong();
+      this.loading = true;
+      this.find(Math.floor(Math.random() * 898) + 1);
+    },
+    url(name) {
+      if (name) {
+        return `https://www.pokepedia.fr/${name}`;
+      }
+      return "";
+    },
+    colorBadge(type) {
+      if (type) {
+        return `https://veekun.com/dex/media/types/en/${type}.png`;
+      }
+      return "";
+    },
+    buttonSong() {
+      const audio = new Audio(this.openButtonSound);
+      audio.volume = 0.052;
+      audio.play();
+    },
+    wrongSong() {
+      const audio = new Audio(this.openWrongSound);
+      audio.volume = 0.05;
+      audio.play();
+    },
+    rightSong() {
+      const audio = new Audio(this.openRightSound);
+      audio.volume = 0.05;
+      audio.play();
+    },
+    mute() {
+      // TODO refactoriser la fonction
+      this.muteOrNot = !this.muteOrNot;
+      if (this.muteOrNot) {
+        this.openButtonSound = "";
+        this.openWrongSound = "";
+        this.openRightSound = "";
+      } else {
+        this.openButtonSound = require("../assets/songs/open_button.wav");
+        this.openWrongSound = require("../assets/songs/wrong.mp3");
+        this.openRightSound = require("../assets/songs/right.wav");
+      }
+    },
+    pokemonCry() {
+      const audio = new Audio(
+        `https://play.pokemonshowdown.com/audio/cries/${this.pokemon.name}.mp3`
+      );
+      audio.volume = 0.05;
+      audio.play();
+    },
+  },
+  created() {
+    this.pokemon.image =
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Pokebola-pokeball-png-0.png/800px-Pokebola-pokeball-png-0.png";
+  },
+};
+</script>
+
+<style scoped>
+a {
+  outline: none;
+  text-decoration: none;
+}
+a:link {
+  color: #000000;
+}
+a:visited {
+  color: #000000;
+}
+#pokedex {
+  position: relative;
+}
+#reset {
+  position: absolute;
+  top: 555px;
+  left: 870px;
+  height: 40px;
+  width: 40px;
+  z-index: 1;
+}
+#reset:hover {
+  background: #fbfb05;
+  opacity: 0.3;
+  box-shadow: #ffff00 10px 10px 30px;
+  border-radius: 50%;
+  transition-duration: 0.4s;
+}
+#btn-right {
+  position: absolute;
+  top: 555px;
+  left: 680px;
+  height: 40px;
+  width: 40px;
+  z-index: 1;
+}
+#btn-right:hover {
+  background: #ffffff;
+  opacity: 0.3;
+  box-shadow: #ffffff 10px 10px 30px;
+  border-radius: 15%;
+  transition-duration: 0.4s;
+}
+#btn-left {
+  position: absolute;
+  top: 555px;
+  left: 630px;
+  height: 40px;
+  width: 40px;
+  z-index: 1;
+}
+#btn-left:hover {
+  background: #ffffff;
+  opacity: 0.3;
+  box-shadow: #ffffff 10px 10px 30px;
+  border-radius: 15%;
+  transition-duration: 0.4s;
+}
+#cry {
+  position: absolute;
+  top: 435px;
+  left: 330px;
+}
+
+#pokemon {
+  position: absolute;
+  top: 260px;
+  left: 150px;
+}
+
+#pokemonId {
+  position: absolute;
+  top: 475px;
+  left: 200px;
+  border-radius: 7px;
+}
+#btn-random {
+  position: absolute;
+  top: 550px;
+  left: 73px;
+  height: 40px;
+  width: 40px;
+  z-index: 1;
+}
+#btn-random:hover {
+  background: #ffffff;
+  opacity: 0.3;
+  box-shadow: #ffffff 10px 10px 30px;
+  border-radius: 50%;
+}
+
+#pokemonName {
+  position: absolute;
+  top: 645px;
+  left: 150px;
+  color: #303030;
+  text-align: center;
+}
+
+#mute {
+  position: absolute;
+  top: 487px;
+  left: 132px;
+  text-align: center;
+  cursor: pointer;
+}
+#mute:hover {
+  background: #ff0000;
+  opacity: 0.3;
+  box-shadow: #ff0000 10px 10px 60px;
+  border-radius: 50%;
+  transition-duration: 0.4s;
+}
+
+#infos {
+  left: 610px;
+  position: absolute;
+  color: #303030;
+  top: 260px;
+  width: 290px;
+  font-size: 11px;
+}
+
+#type1 {
+  position: absolute;
+  top: 650px;
+  left: 600px;
+  color: #303030;
+  width: 138px;
+  height: 46px;
+  text-align: center;
+}
+
+#type2 {
+  position: absolute;
+  top: 650px;
+  left: 770px;
+  color: #303030;
+  width: 133px;
+  height: 44px;
+  text-align: center;
+}
+
+/* light animation  */
+.circles-container {
+  position: absolute;
+  display: flex;
+  top: 50px;
+  left: 60px;
+}
+
+.circle {
+  background: rgb(255, 255, 255);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
+  margin: 10px;
+  height: 70px;
+  width: 70px;
+  transform: scale(1);
+  animation: pulse 2s infinite;
+}
+
+.circle.white {
+  background: rgb(255, 255, 255);
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, 1);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+  }
+
+  70% {
+    transform: scale(0.3);
+    box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+  }
+
+  100% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+</style>
