@@ -32,6 +32,15 @@
         <div class="circles-container" v-if="loading">
           <div class="circle white"></div>
         </div>
+        <div v-if="pokemon.id">
+          <div class="good"></div>
+          <div id="light-good"></div>
+        </div>
+        <div v-if="!pokemon.id && !pokemonOrNot">
+          <div class="false"></div>
+          <div id="light-false"></div>
+        </div>
+
         <img src="../assets/pokedex.png" width="1000vh" />
         <div id="cry">
           <v-tooltip top color="warning">
@@ -489,6 +498,48 @@ a:visited {
   text-align: center;
 }
 
+.good {
+  position: absolute;
+  display: flex;
+  top: 50px;
+  left: 155px;
+  height: 40px;
+  width: 80px;
+  background: #dc0a2d;
+}
+#light-good {
+  position: absolute;
+  display: flex;
+  top: 50px;
+  left: 239px;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  background: #00ff1a;
+  box-shadow: 0 0 8px #aeffa0, inset 0 0 8px #aeffa0, 0 0 16px #37f713,
+    inset 0 0 16px #37f713, 0 0 32px #37f713, inset 0 0 32px #37f713;
+}
+.false {
+  position: absolute;
+  display: flex;
+  top: 50px;
+  left: 195px;
+  height: 40px;
+  width: 80px;
+  background: #dc0a2d;
+}
+#light-false {
+  position: absolute;
+  display: flex;
+  top: 50px;
+  left: 157px;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  background: #ff0000;
+  box-shadow: 0 0 8px #ffa0a0, inset 0 0 8px #ffa0a0, 0 0 16px #f71313,
+    inset 0 0 16px #f71313, 0 0 32px #f71313, inset 0 0 32px #f71313;
+}
 /* light animation  */
 .circles-container {
   position: absolute;
