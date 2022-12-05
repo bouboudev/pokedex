@@ -501,7 +501,7 @@ a:visited {
 .good {
   position: absolute;
   display: flex;
-  top: 50px;
+  top: 49px;
   left: 155px;
   height: 40px;
   width: 80px;
@@ -522,7 +522,7 @@ a:visited {
 .false {
   position: absolute;
   display: flex;
-  top: 50px;
+  top: 49px;
   left: 195px;
   height: 40px;
   width: 80px;
