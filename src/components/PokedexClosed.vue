@@ -15,7 +15,7 @@
             >
             </v-img>
           </template>
-          <h1 class="my-12">Ouvrir le Pokédex</h1>
+          <h1 class="my-2">Ouvrir le Pokédex</h1>
         </v-tooltip>
       </div>
     </v-row>
