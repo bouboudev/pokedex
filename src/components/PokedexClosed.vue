@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <!-- pokedex closed -->
-    <v-row class="d-flex justify-center">
+    <v-row class="d-flex align-center justify-center mt-12">
       <div id="pokedex">
         <v-tooltip color="warning">
           <template v-slot:activator="{ on, attrs }">

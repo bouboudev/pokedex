@@ -1,13 +1,16 @@
 <template>
-  <div class="home" @click="openPokedex">
+  <v-container @click="openPokedex">
     <div v-if="!pokedexOpenOrClosed">
       <PokedexClosed />
     </div>
-    <div v-else>
-      <Pokedex />
-    </div>
+
+    <transition name="fade">
+      <div v-if="pokedexOpenOrClosed">
+        <Pokedex />
+      </div>
+    </transition>
     <v-row>
-      <v-col class="d-flex align-center justify-center my-6" cols="12">
+      <v-col class="d-flex align-center justify-center mt-3" cols="12">
         <a href="https://github.com/bouboudev" target="_blank">
           <v-card class="pt-1 px-2" elevation="12">
             <h2>Pokédex de <span class="red--text"> Bouzid KRITA </span></h2>
@@ -15,7 +18,7 @@
         </a>
       </v-col>
     </v-row>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -49,5 +52,13 @@ a:link {
 }
 a:visited {
   color: #000000;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
