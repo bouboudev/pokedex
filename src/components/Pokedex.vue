@@ -177,15 +177,6 @@
         </div>
       </div>
     </v-row>
-    <v-row>
-      <v-col class="d-flex align-center justify-center mt-0" cols="12">
-        <a href="https://github.com/bouboudev" target="_blank">
-          <v-card class="pt-1 px-2" elevation="12">
-            <h2>Pokédex de <span class="red--text"> Bouzid KRITA </span></h2>
-          </v-card>
-        </a>
-      </v-col>
-    </v-row>
   </v-container>
 </template>
 
@@ -355,16 +346,6 @@ export default {
 </script>
 
 <style scoped>
-a {
-  outline: none;
-  text-decoration: none;
-}
-a:link {
-  color: #000000;
-}
-a:visited {
-  color: #000000;
-}
 #pokedex {
   position: relative;
 }
