@@ -29,6 +29,15 @@
     <!-- pokedex -->
     <v-row class="d-flex justify-center mb-n14">
       <div id="pokedex">
+        <v-tooltip top color="warning">
+          <template v-slot:activator="{ on, attrs }">
+            <div v-bind="attrs" v-on="on" id="close" @click="closePokedex">
+              <v-icon large> mdi-close-circle-outline </v-icon>
+            </div>
+          </template>
+          <span>Fermer le pokédex</span>
+        </v-tooltip>
+
         <div class="circles-container" v-if="loading">
           <div class="circle white"></div>
         </div>
@@ -337,6 +346,9 @@ export default {
       audio.volume = 0.05;
       audio.play();
     },
+    closePokedex() {
+      this.$emit("close");
+    },
   },
   created() {
     this.pokemon.image =
@@ -348,6 +360,12 @@ export default {
 <style scoped>
 #pokedex {
   position: relative;
+}
+#close {
+  position: absolute;
+  top: 72px;
+  left: 492px;
+  z-index: 1;
 }
 #reset {
   position: absolute;

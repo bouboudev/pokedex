@@ -1,12 +1,11 @@
 <template>
-  <v-container @click="openPokedex">
-    <div v-if="!pokedexOpenOrClosed">
+  <v-container>
+    <div v-if="!pokedexOpenOrClosed" @click="openPokedex">
       <PokedexClosed />
     </div>
-
     <transition name="fade">
       <div v-if="pokedexOpenOrClosed">
-        <Pokedex />
+        <Pokedex @close="pokedexOpenOrClosed = !pokedexOpenOrClosed" />
       </div>
     </transition>
     <v-row>
@@ -38,6 +37,11 @@ export default {
   methods: {
     openPokedex() {
       this.pokedexOpenOrClosed = true;
+      console.log("openPokedex");
+    },
+    closePokedex() {
+      this.pokedexOpenOrClosed = false;
+      console.log("closePokedex");
     },
   },
 };
