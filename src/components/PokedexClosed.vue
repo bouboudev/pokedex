@@ -9,14 +9,12 @@
           width="550"
         >
           <div id="openPokedex">
-            <v-btn icon @click="openPokedex"
+            <v-btn icon @click="openPokedex" class="white--text"
               ><v-icon>mdi-open-in-app</v-icon></v-btn
             >
           </div>
           <div id="pokemonList">
             <v-data-table
-              :loading="pokemons.length < 8"
-              loading-text=" Recherche de pokemons à proximité..."
               :headers="headers"
               :items="pokemons"
               :items-per-page="8"
@@ -32,6 +30,14 @@
                   <td><v-img :src="item.image" width="50" /></td>
                   <td>{{ item.name }}</td>
                 </tr>
+              </template>
+              <!-- change no data available -->
+              <template v-slot:no-data>
+                <v-btn color="primary" @click="pokemonNearby" x-small>
+                  <span class="text-body-2">
+                    Rechercher des pokemons à proximité
+                  </span>
+                </v-btn>
               </template>
             </v-data-table>
           </div>
@@ -91,21 +97,6 @@ export default {
           console.error(err);
         });
     },
-    // async findTenPokemons() {
-    //   await axios
-    //     .get("https://pokeapi.co/api/v2/pokemon?limit=10")
-    //     .then((response) => {
-    //       console.log(response.data);
-    //       this.fillPokemonsList(response.data.results);
-    //     })
-    //     .catch((err) => {
-    //       console.error(err);
-    //     });
-    // },
-    // fillPokemonsList(pokemons) {
-    //   console.log(pokemons);
-    //   this.pokemons = pokemons;
-    // },
     numberRandom() {
       // check if the number is already in the array
       let number = Math.floor(Math.random() * 898) + 1;
@@ -126,14 +117,15 @@ export default {
       this.$store.commit("setPokemonResearch", item);
       this.$emit("openPokedex");
     },
+    pokemonNearby() {
+      for (let i = 0; i < 9; i++) {
+        this.find(this.numberRandom());
+      }
+    },
   },
 
   mounted() {
     this.pokemons = [];
-    // this.findTenPokemons();
-    for (let i = 0; i < 9; i++) {
-      this.find(this.numberRandom());
-    }
   },
 };
 </script>

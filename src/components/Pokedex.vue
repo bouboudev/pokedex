@@ -38,7 +38,9 @@
           <v-tooltip top color="warning">
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on" id="close" @click="closePokedex">
-                <v-icon large> mdi-close-circle-outline </v-icon>
+                <v-icon large class="pointer white--text">
+                  mdi-close-circle-outline
+                </v-icon>
               </div>
             </template>
             <span>Fermer le pokédex</span>
