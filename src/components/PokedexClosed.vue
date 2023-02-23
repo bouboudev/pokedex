@@ -3,30 +3,138 @@
     <!-- pokedex closed -->
     <v-row class="d-flex align-center justify-center mt-12">
       <div id="pokedex">
-        <v-tooltip color="warning">
-          <template v-slot:activator="{ on, attrs }">
-            <v-img
-              v-bind="attrs"
-              v-on="on"
-              id="img_pokedex"
-              :lazy-src="require('@/assets/pokedex_closed.png')"
-              :src="require('@/assets/pokedex_closed.png')"
-              width="550"
+        <v-img
+          id="img_pokedex"
+          :src="require('@/assets/pokedex_closed.png')"
+          width="550"
+        >
+          <div id="openPokedex">
+            <v-btn icon @click="openPokedex"
+              ><v-icon>mdi-open-in-app</v-icon></v-btn
             >
-            </v-img>
-          </template>
-          <h1 class="my-2">Ouvrir le Pokédex</h1>
-        </v-tooltip>
+          </div>
+          <div id="pokemonList">
+            <v-data-table
+              :loading="pokemons.length < 8"
+              loading-text=" Recherche de pokemons à proximité..."
+              :headers="headers"
+              :items="pokemons"
+              :items-per-page="8"
+              class="elevation-1 table grey lighten-5"
+              hide-default-footer
+              :footer-props="{
+                itemsPerPageOptions: [9],
+              }"
+            >
+              <template v-slot:item="{ item }">
+                <tr @click="findThePokemon(item)" class="pointer">
+                  <td>{{ item.id }}</td>
+                  <td><v-img :src="item.image" width="50" /></td>
+                  <td>{{ item.name }}</td>
+                </tr>
+              </template>
+            </v-data-table>
+          </div>
+        </v-img>
       </div>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import axios from "axios";
+import { mapState, mapActions } from "vuex";
 export default {
   name: "PokeDex",
-  data: () => ({}),
-  methods: {},
+  data() {
+    return {
+      headers: [
+        { text: "ID", sortable: false, value: "id" },
+        { text: "Image", sortable: false, value: "image" },
+        {
+          text: "Nom",
+          align: "start",
+          sortable: false,
+          value: "name",
+        },
+      ],
+      pokemons: [],
+    };
+  },
+  computed: {
+    ...mapState({
+      pokemonResearch: (state) => state.pokemonResearch,
+      state: (state) => state,
+    }),
+  },
+  methods: {
+    ...mapActions({
+      setPokemonResearch: "setPokemonResearch",
+    }),
+
+    async find(parameter) {
+      // pause d'une séconde
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await axios
+        .get("https://pokeapi.co/api/v2/pokemon/" + parameter)
+        .then((response) => {
+          this.stats = response.data.stats;
+          this.pokemon = response.data;
+          this.pokemons.push(this.pokemon);
+
+          this.pokemon.image =
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/" +
+            response.data.id +
+            ".png";
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    // async findTenPokemons() {
+    //   await axios
+    //     .get("https://pokeapi.co/api/v2/pokemon?limit=10")
+    //     .then((response) => {
+    //       console.log(response.data);
+    //       this.fillPokemonsList(response.data.results);
+    //     })
+    //     .catch((err) => {
+    //       console.error(err);
+    //     });
+    // },
+    // fillPokemonsList(pokemons) {
+    //   console.log(pokemons);
+    //   this.pokemons = pokemons;
+    // },
+    numberRandom() {
+      // check if the number is already in the array
+      let number = Math.floor(Math.random() * 898) + 1;
+      if (this.pokemons.length > 0) {
+        for (let i = 0; i < this.pokemons.length; i++) {
+          if (this.pokemons[i].id === number) {
+            return this.numberRandom();
+          }
+        }
+      }
+      return number;
+    },
+    openPokedex() {
+      this.$emit("openPokedex");
+      this.$store.commit("setPokemonResearch", null);
+    },
+    findThePokemon(item) {
+      this.$store.commit("setPokemonResearch", item);
+      this.$emit("openPokedex");
+    },
+  },
+
+  mounted() {
+    this.pokemons = [];
+    // this.findTenPokemons();
+    for (let i = 0; i < 9; i++) {
+      this.find(this.numberRandom());
+    }
+  },
 };
 </script>
 
@@ -34,7 +142,28 @@ export default {
 #pokedex {
   position: relative;
 }
-#img_pokedex {
-  cursor: pointer;
+
+#pokemonList {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 76%;
+  height: 72%;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  margin-left: 7.8%;
+  margin-top: 29.4%;
+}
+#openPokedex {
+  position: absolute;
+  top: 63px;
+  left: 425px;
+}
+.table {
+  width: 100%;
+  height: 100%;
 }
 </style>

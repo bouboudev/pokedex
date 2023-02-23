@@ -12,7 +12,12 @@
           :disabled="loading"
           :loading="loading"
           @keyup.enter="findByNameOrID"
-        ></v-text-field>
+        >
+          <!-- changer lA TAILLE DU  text du label -->
+          <template v-slot:label>
+            <span>Nom du pokémon ou son ID</span>
+          </template>
+        </v-text-field>
       </v-col>
       <v-col cols="2" class="mt-1">
         <v-btn
@@ -28,169 +33,177 @@
     </v-row>
     <!-- pokedex -->
     <v-row class="d-flex justify-center mb-n14">
-      <div id="pokedex">
-        <v-tooltip top color="warning">
-          <template v-slot:activator="{ on, attrs }">
-            <div v-bind="attrs" v-on="on" id="close" @click="closePokedex">
-              <v-icon large> mdi-close-circle-outline </v-icon>
-            </div>
-          </template>
-          <span>Fermer le pokédex</span>
-        </v-tooltip>
-
-        <div class="circles-container" v-if="loading">
-          <div class="circle white"></div>
-        </div>
-        <div v-if="pokemon.id">
-          <div class="good"></div>
-          <div id="light-good"></div>
-        </div>
-        <div v-if="!pokemon.id && !pokemonOrNot">
-          <div class="false"></div>
-          <div id="light-false"></div>
-        </div>
-
-        <img src="../assets/pokedex.png" width="1000vh" />
-        <div id="cry">
+      <v-col>
+        <div id="pokedex">
           <v-tooltip top color="warning">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                v-on="on"
-                outlined
-                small
-                color="error"
-                :disabled="!pokemon.name"
-                @click="pokemonCry"
-              >
-                <v-icon>mdi-play-circle-outline</v-icon>
-                Crie</v-btn
-              >
+              <div v-bind="attrs" v-on="on" id="close" @click="closePokedex">
+                <v-icon large> mdi-close-circle-outline </v-icon>
+              </div>
             </template>
-            <span>Entendre le pokémon</span>
+            <span>Fermer le pokédex</span>
           </v-tooltip>
-        </div>
-        <div id="pokemon">
-          <a :href="url(pokemon.name)" target="_blank">
-            <img :src="pokemon.image" height="170px" />
-          </a>
-        </div>
-        <!-- Button mute -->
-        <!-- TODO créer un composant pour le bouton mute -->
-        <div id="mute" @click="mute">
-          <div v-if="muteOrNot">
+
+          <div class="circles-container" v-if="loading">
+            <div class="circle white"></div>
+          </div>
+          <div v-if="pokemon.id">
+            <div class="good"></div>
+            <div id="light-good"></div>
+          </div>
+          <div v-if="!pokemon.id && !pokemonOrNot">
+            <div class="false"></div>
+            <div id="light-false"></div>
+          </div>
+
+          <img src="../assets/pokedex.png" width="1000vh" />
+          <div id="cry">
             <v-tooltip top color="warning">
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on"> mdi-volume-off</v-icon>
+                <v-btn
+                  v-bind="attrs"
+                  v-on="on"
+                  outlined
+                  small
+                  color="error"
+                  :disabled="!pokemon.name"
+                  @click="pokemonCry"
+                >
+                  <v-icon>mdi-play-circle-outline</v-icon>
+                  Crie</v-btn
+                >
               </template>
-              <span>Allumer le son</span>
+              <span>Entendre le pokémon</span>
             </v-tooltip>
           </div>
-          <div v-else>
-            <v-tooltip top color="warning">
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on"> mdi-volume-high</v-icon>
-              </template>
-              <span>Couper le son</span>
-            </v-tooltip>
+          <div id="pokemon">
+            <a :href="url(pokemon.name)" target="_blank">
+              <img :src="pokemon.image" height="170px" />
+            </a>
           </div>
-        </div>
-        <!-- informations -->
-        <div id="infos">
-          <div v-if="pokemonOrNot">
-            <div v-for="stat in pokemon.stats" :key="stat.id">
-              - {{ firstLetterUpperCase(stat.stat.name) }} =
-              {{ stat.base_stat }} pt
-              <br />
-              <template>
-                <v-progress-linear
-                  rounded
-                  buffer-value="0"
-                  stream
-                  max="140"
-                  :value="stat.base_stat"
-                  color="black"
-                ></v-progress-linear>
-              </template>
+          <!-- Button mute -->
+          <!-- TODO créer un composant pour le bouton mute -->
+          <div id="mute" @click="mute">
+            <div v-if="muteOrNot">
+              <v-tooltip top color="warning">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon v-bind="attrs" v-on="on"> mdi-volume-off</v-icon>
+                </template>
+                <span>Allumer le son</span>
+              </v-tooltip>
+            </div>
+            <div v-else>
+              <v-tooltip top color="warning">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon v-bind="attrs" v-on="on"> mdi-volume-high</v-icon>
+                </template>
+                <span>Couper le son</span>
+              </v-tooltip>
             </div>
           </div>
-          <div else>
-            <h2>
-              {{ message }}
-            </h2>
+          <!-- informations -->
+          <div id="infos">
+            <div v-if="pokemonOrNot">
+              <div v-for="stat in pokemon.stats" :key="stat.id">
+                - {{ firstLetterUpperCase(stat.stat.name) }} =
+                {{ stat.base_stat }} pt
+                <br />
+                <template>
+                  <v-progress-linear
+                    rounded
+                    buffer-value="0"
+                    stream
+                    max="140"
+                    :value="stat.base_stat"
+                    color="black"
+                  ></v-progress-linear>
+                </template>
+              </div>
+            </div>
+            <div else>
+              <h2>
+                {{ message }}
+              </h2>
+            </div>
+          </div>
+          <div id="pokemonId" v-if="pokemon.id > 0">
+            <v-card class="pa-2 mt-1" flat> ID : {{ pokemon.id }} </v-card>
+          </div>
+          <div id="pokemonName">
+            <h3 class="whiter">{{ firstLetterUpperCase(pokemon.name) }}</h3>
+          </div>
+
+          <!-- Button reset -->
+          <v-tooltip top color="warning">
+            <template v-slot:activator="{ on, attrs }">
+              <button
+                id="reset"
+                v-bind="attrs"
+                v-on="on"
+                @click="reset"
+              ></button>
+            </template>
+            <span>Recommencer</span>
+          </v-tooltip>
+          <v-tooltip top color="warning">
+            <template v-slot:activator="{ on, attrs }">
+              <button
+                id="btn-right"
+                v-bind="attrs"
+                v-on="on"
+                @click="nextPoke"
+              ></button>
+            </template>
+            <span>Suivant</span>
+          </v-tooltip>
+          <v-tooltip top color="warning">
+            <template v-slot:activator="{ on, attrs }">
+              <button
+                id="btn-left"
+                v-bind="attrs"
+                v-on="on"
+                :disabled="pokemon.id === 1 || pokemon.id === 0"
+                @click="previusPoke"
+              ></button>
+            </template>
+            <span>Précédent</span>
+          </v-tooltip>
+          <v-tooltip top color="warning">
+            <template v-slot:activator="{ on, attrs }">
+              <button
+                id="btn-random"
+                v-bind="attrs"
+                v-on="on"
+                @click="randomPokemon"
+              ></button>
+            </template>
+            <span>Pokémon au hasard</span>
+          </v-tooltip>
+          <div id="type1">
+            <a
+              :href="`https://pokemon.fandom.com/wiki/${pokemon.type1}_type`"
+              target="_blank"
+            >
+              <img height="25px" :src="colorBadge(pokemon.type1)" />
+            </a>
+          </div>
+          <div id="type2">
+            <a
+              :href="`https://pokemon.fandom.com/wiki/${pokemon.type2}_type`"
+              target="_blank"
+            >
+              <img height="25px" :src="colorBadge(pokemon.type2)" />
+            </a>
           </div>
         </div>
-        <div id="pokemonId" v-if="pokemon.id > 0">
-          <v-card class="pa-2 mt-1" flat> ID : {{ pokemon.id }} </v-card>
-        </div>
-        <div id="pokemonName">
-          <h3>{{ firstLetterUpperCase(pokemon.name) }}</h3>
-        </div>
-
-        <!-- Button reset -->
-        <v-tooltip top color="warning">
-          <template v-slot:activator="{ on, attrs }">
-            <button id="reset" v-bind="attrs" v-on="on" @click="reset"></button>
-          </template>
-          <span>Recommencer</span>
-        </v-tooltip>
-        <v-tooltip top color="warning">
-          <template v-slot:activator="{ on, attrs }">
-            <button
-              id="btn-right"
-              v-bind="attrs"
-              v-on="on"
-              @click="nextPoke"
-            ></button>
-          </template>
-          <span>Suivant</span>
-        </v-tooltip>
-        <v-tooltip top color="warning">
-          <template v-slot:activator="{ on, attrs }">
-            <button
-              id="btn-left"
-              v-bind="attrs"
-              v-on="on"
-              :disabled="pokemon.id === 1 || pokemon.id === 0"
-              @click="previusPoke"
-            ></button>
-          </template>
-          <span>Précédent</span>
-        </v-tooltip>
-        <v-tooltip top color="warning">
-          <template v-slot:activator="{ on, attrs }">
-            <button
-              id="btn-random"
-              v-bind="attrs"
-              v-on="on"
-              @click="randomPokemon"
-            ></button>
-          </template>
-          <span>Pokémon au hasard</span>
-        </v-tooltip>
-        <div id="type1">
-          <a
-            :href="`https://pokemon.fandom.com/wiki/${pokemon.type1}_type`"
-            target="_blank"
-          >
-            <img height="25px" :src="colorBadge(pokemon.type1)" />
-          </a>
-        </div>
-        <div id="type2">
-          <a
-            :href="`https://pokemon.fandom.com/wiki/${pokemon.type2}_type`"
-            target="_blank"
-          >
-            <img height="25px" :src="colorBadge(pokemon.type2)" />
-          </a>
-        </div>
-      </div>
+      </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
 import axios from "axios";
+import { mapState } from "vuex";
 export default {
   name: "PokeDex",
   data: () => ({
@@ -212,6 +225,12 @@ export default {
     loading: false,
     muteOrNot: false,
   }),
+  computed: {
+    ...mapState({
+      pokemonResearch: (state) => state.pokemonResearch,
+      state: (state) => state,
+    }),
+  },
   methods: {
     findByNameOrID() {
       this.buttonSong();
@@ -220,6 +239,9 @@ export default {
       this.find(search);
     },
     async find(parameter) {
+      if (this.pokemonResearch) {
+        parameter = this.pokemonResearch.id;
+      }
       this.pokemon.image =
         "https://thumbs.gfycat.com/DampSpanishCleanerwrasse-size_restricted.gif";
 
@@ -354,6 +376,9 @@ export default {
     this.pokemon.image =
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Pokebola-pokeball-png-0.png/800px-Pokebola-pokeball-png-0.png";
   },
+  mounted() {
+    if (this.pokemonResearch) this.find(this.pokemonResearch.id);
+  },
 };
 </script>
 
@@ -415,7 +440,7 @@ export default {
 #cry {
   position: absolute;
   top: 435px;
-  left: 330px;
+  left: 310px;
 }
 
 #pokemon {
@@ -447,10 +472,16 @@ export default {
 
 #pokemonName {
   position: absolute;
-  top: 645px;
-  left: 150px;
+  /* limiter le text sur la ligne horizontal sinon mettre la suite sur la ligne du bas */
+  max-width: 150px;
+  word-wrap: break-word;
+  top: 650px;
+  left: 140px;
   color: #303030;
-  text-align: center;
+  font-size: 11px;
+}
+.whiter {
+  white-space: normal;
 }
 
 #mute {

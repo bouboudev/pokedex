@@ -1,7 +1,7 @@
 <template>
   <v-container>
-    <div v-if="!pokedexOpenOrClosed" @click="openPokedex">
-      <PokedexClosed />
+    <div v-show="!pokedexOpenOrClosed">
+      <PokedexClosed @openPokedex="openPokedex" />
     </div>
     <transition name="fade">
       <div v-if="pokedexOpenOrClosed">
@@ -12,7 +12,7 @@
       <v-col class="d-flex align-center justify-center mt-3" cols="12">
         <a href="https://github.com/bouboudev" target="_blank">
           <v-card class="pt-1 px-2" elevation="12">
-            <h2>Pokédex de <span class="red--text"> Bouzid KRITA </span></h2>
+            <h4>Pokédex de <span class="red--text"> Bouzid KRITA </span></h4>
           </v-card>
         </a>
       </v-col>
@@ -37,11 +37,9 @@ export default {
   methods: {
     openPokedex() {
       this.pokedexOpenOrClosed = true;
-      console.log("openPokedex");
     },
     closePokedex() {
       this.pokedexOpenOrClosed = false;
-      console.log("closePokedex");
     },
   },
 };
