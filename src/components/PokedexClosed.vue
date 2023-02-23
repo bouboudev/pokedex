@@ -27,17 +27,29 @@
               <template v-slot:item="{ item }">
                 <tr @click="findThePokemon(item)" class="pointer">
                   <td>{{ item.id }}</td>
-                  <td><v-img :src="item.image" width="50" /></td>
                   <td>{{ item.name }}</td>
+                  <td><v-img :src="item.image" width="50" /></td>
                 </tr>
               </template>
               <!-- change no data available -->
               <template v-slot:no-data>
-                <v-btn color="primary" @click="pokemonNearby" x-small>
+                <v-btn
+                  color="primary"
+                  @click="pokemonNearby"
+                  x-small
+                  class="mt-6"
+                >
                   <span class="text-body-2">
                     Rechercher des pokemons à proximité
                   </span>
                 </v-btn>
+                <div class="d-flex align-center justify-center mt-6">
+                  <v-img
+                    max-width="100px"
+                    src="https://media.tenor.com/gjxJnAFTKNAAAAAi/hoean-staters-pokemon.gif"
+                  >
+                  </v-img>
+                </div>
               </template>
             </v-data-table>
           </div>
@@ -56,13 +68,13 @@ export default {
     return {
       headers: [
         { text: "ID", sortable: false, value: "id" },
-        { text: "Image", sortable: false, value: "image" },
         {
           text: "Nom",
           align: "start",
           sortable: false,
           value: "name",
         },
+        { text: "Image", sortable: false, value: "image" },
       ],
       pokemons: [],
     };

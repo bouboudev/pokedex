@@ -15,7 +15,7 @@
         >
           <!-- changer lA TAILLE DU  text du label -->
           <template v-slot:label>
-            <span>Nom du pokémon ou son ID</span>
+            <span class="label">Nom du pokémon ou son ID</span>
           </template>
         </v-text-field>
       </v-col>
@@ -385,6 +385,10 @@ export default {
 </script>
 
 <style scoped>
+.label {
+  font-size: 0.6rem;
+  word-spacing: 1px;
+}
 #pokedex {
   position: relative;
 }
