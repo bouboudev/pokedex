@@ -23,7 +23,7 @@
               :headers="headers"
               :items="pokemons"
               :items-per-page="8"
-              class="elevation-1 table grey lighten-5"
+              class="elevation-1 table gameboy white--text"
               hide-default-footer
               :footer-props="{
                 itemsPerPageOptions: [9],
@@ -175,5 +175,10 @@ export default {
 .table {
   width: 100%;
   height: 100%;
+}
+
+.gameboy {
+  background: #a1b174 !important;
+  border: #2f060d solid 3px;
 }
 </style>
