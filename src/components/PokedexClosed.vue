@@ -23,7 +23,7 @@
               :headers="headers"
               :items="pokemons"
               :items-per-page="8"
-              class="elevation-1 table gameboy white--text"
+              class="elevation-1 table gameboy"
               hide-default-footer
               :footer-props="{
                 itemsPerPageOptions: [9],
@@ -39,10 +39,10 @@
               <!-- change no data available -->
               <template v-slot:no-data>
                 <v-btn
-                  color="primary"
+                  color="gameboydark"
                   @click="pokemonNearby"
                   x-small
-                  class="mt-6"
+                  class="mt-6 white--text text--lighten-1"
                 >
                   <span class="text-body-2">
                     Rechercher des pokemons à proximité
@@ -181,5 +181,8 @@ export default {
   background: #a1b174 !important;
   border: #2f060d solid 3px;
   border-radius: 10px;
+}
+.gameboydark {
+  background: #717d52 !important;
 }
 </style>
