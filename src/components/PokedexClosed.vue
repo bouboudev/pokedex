@@ -180,5 +180,6 @@ export default {
 .gameboy {
   background: #a1b174 !important;
   border: #2f060d solid 3px;
+  border-radius: 10px;
 }
 </style>
