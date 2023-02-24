@@ -3,16 +3,21 @@
     <!-- pokedex closed -->
     <v-row class="d-flex align-center justify-center mt-12">
       <div id="pokedex">
+        <v-tooltip top color="warning">
+          <template v-slot:activator="{ on, attrs }">
+            <div v-bind="attrs" v-on="on" id="openPokedex">
+              <v-btn large icon @click="openPokedex" class="white--text"
+                ><v-icon>mdi-open-in-app</v-icon></v-btn
+              >
+            </div>
+          </template>
+          <span>Ouvrir le pokédex</span>
+        </v-tooltip>
         <v-img
           id="img_pokedex"
           :src="require('@/assets/pokedex_closed.png')"
           width="550"
         >
-          <div id="openPokedex">
-            <v-btn icon @click="openPokedex" class="white--text"
-              ><v-icon>mdi-open-in-app</v-icon></v-btn
-            >
-          </div>
           <div id="pokemonList">
             <v-data-table
               :headers="headers"
@@ -163,8 +168,9 @@ export default {
 }
 #openPokedex {
   position: absolute;
-  top: 63px;
-  left: 425px;
+  top: 38px;
+  left: 490px;
+  z-index: 1;
 }
 .table {
   width: 100%;
