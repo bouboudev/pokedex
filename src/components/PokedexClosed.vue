@@ -19,7 +19,6 @@
           width="550"
         >
           <div id="pokemonList" class="d-flex flex-column align-end">
-            <systemBar widthBar="420" />
             <v-data-table
               :headers="headers"
               :items="pokemons"
@@ -30,6 +29,11 @@
                 itemsPerPageOptions: [9],
               }"
             >
+              <!-- before item -->
+              <template v-slot:top>
+                <systemBar widthBar="425" />
+              </template>
+
               <template v-slot:item="{ item }">
                 <tr @click="findThePokemon(item)" class="pointer">
                   <td>{{ item.id }}</td>

@@ -492,7 +492,6 @@ export default {
 
 #pokemonName {
   position: absolute;
-  /* limiter le text sur la ligne horizontal sinon mettre la suite sur la ligne du bas */
   max-width: 150px;
   word-wrap: break-word;
   top: 650px;
