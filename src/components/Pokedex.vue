@@ -131,6 +131,9 @@
           <div id="pokemonId" v-if="pokemon.id > 0">
             <v-card class="pa-2 mt-1" flat> ID : {{ pokemon.id }} </v-card>
           </div>
+          <div id="systembar">
+            <SystemBar widthBar="318" />
+          </div>
           <div id="pokemonName">
             <h3 class="whiter">{{ firstLetterUpperCase(pokemon.name) }}</h3>
           </div>
@@ -204,10 +207,14 @@
 </template>
 
 <script>
+import SystemBar from "./SystemBar.vue";
 import axios from "axios";
 import { mapState } from "vuex";
 export default {
   name: "PokeDex",
+  components: {
+    SystemBar,
+  },
   data: () => ({
     pokemon: {
       name: "",
@@ -455,6 +462,13 @@ export default {
   left: 150px;
 }
 
+#systembar {
+  position: absolute;
+  top: 250px;
+  left: 597px;
+  z-index: 1;
+}
+
 #pokemonId {
   position: absolute;
   top: 475px;
@@ -509,9 +523,9 @@ export default {
   left: 610px;
   position: absolute;
   color: #303030;
-  top: 260px;
+  top: 276px;
   width: 290px;
-  font-size: 11px;
+  font-size: 10px;
 }
 
 #type1 {

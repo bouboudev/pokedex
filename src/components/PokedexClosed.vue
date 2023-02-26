@@ -19,7 +19,7 @@
           width="550"
         >
           <div id="pokemonList" class="d-flex flex-column align-end">
-            <systemBar />
+            <systemBar widthBar="420" />
             <v-data-table
               :headers="headers"
               :items="pokemons"

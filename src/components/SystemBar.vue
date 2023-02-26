@@ -1,5 +1,5 @@
 <template>
-  <v-card width="420" class="transparent elevation-0">
+  <v-card :width="widthBar" class="transparent elevation-0">
     <v-system-bar lights-out dark>
       <span class="text-body-2">{{ hours }}</span>
       <v-spacer></v-spacer>
@@ -14,6 +14,9 @@
 <script>
 export default {
   name: "SystemBar",
+  props: {
+    widthBar: Number,
+  },
   data() {
     return {
       battery: {},
@@ -24,6 +27,9 @@ export default {
       let date = new Date();
       let hours = date.getHours();
       let minutes = date.getMinutes();
+      if (minutes < 10) {
+        minutes = "0" + minutes;
+      }
       return hours + ":" + minutes;
     },
     iconBattery() {
@@ -42,6 +48,7 @@ export default {
       }
     },
     iconWifi() {
+      console.log(navigator);
       if (this.networkPercentage() > 5) {
         return "mdi-wifi-strength-3";
       } else if (this.networkPercentage() > 2) {
