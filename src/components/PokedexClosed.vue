@@ -18,7 +18,8 @@
           :src="require('@/assets/pokedex_closed.png')"
           width="550"
         >
-          <div id="pokemonList">
+          <div id="pokemonList" class="d-flex flex-column align-end">
+            <systemBar />
             <v-data-table
               :headers="headers"
               :items="pokemons"
@@ -67,8 +68,12 @@
 <script>
 import axios from "axios";
 import { mapState, mapActions } from "vuex";
+import SystemBar from "./SystemBar.vue";
 export default {
   name: "PokeDex",
+  components: {
+    SystemBar,
+  },
   data() {
     return {
       headers: [
@@ -82,6 +87,7 @@ export default {
         { text: "Image", sortable: false, value: "image" },
       ],
       pokemons: [],
+      battery: {},
     };
   },
   computed: {
@@ -158,7 +164,6 @@ export default {
   left: 0;
   width: 76%;
   height: 72%;
-  background-color: rgba(0, 0, 0, 0.5) !important;
   display: flex;
   align-items: center;
   justify-content: center;
