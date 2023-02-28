@@ -78,7 +78,7 @@
                   @click="pokemonCry"
                 >
                   <v-icon>mdi-play-circle-outline</v-icon>
-                  Crie</v-btn
+                  Cri</v-btn
                 >
               </template>
               <span>Entendre le pokémon</span>
