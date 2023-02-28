@@ -15,7 +15,7 @@
 export default {
   name: "SystemBar",
   props: {
-    widthBar: Number,
+    widthBar: String,
   },
   data() {
     return {
@@ -48,7 +48,6 @@ export default {
       }
     },
     iconWifi() {
-      console.log(navigator);
       if (this.networkPercentage() > 5) {
         return "mdi-wifi-strength-3";
       } else if (this.networkPercentage() > 2) {
@@ -67,7 +66,6 @@ export default {
       });
     },
     networkPercentage() {
-      console.log(navigator.connection.downlink);
       return navigator.connection.downlink;
     },
   },

@@ -35,9 +35,16 @@
               </template>
 
               <template v-slot:item="{ item }">
-                <tr @click="findThePokemon(item)" class="pointer">
+                <tr @click="findThePokemon(item)" class="pointer text-4">
                   <td>{{ item.id }}</td>
                   <td>{{ item.name }}</td>
+                  <td>
+                    <div class="d-flex flex-column">
+                      <span v-for="(type, index) in item.types" :key="index">
+                        <img height="15px" :src="colorBadge(type.type.name)" />
+                      </span>
+                    </div>
+                  </td>
                   <td><v-img :src="item.image" width="50" /></td>
                 </tr>
               </template>
@@ -88,6 +95,7 @@ export default {
           sortable: false,
           value: "name",
         },
+        { text: "Type", sortable: false, value: "type" },
         { text: "Image", sortable: false, value: "image" },
       ],
       pokemons: [],
@@ -148,6 +156,12 @@ export default {
       for (let i = 0; i < 9; i++) {
         this.find(this.numberRandom());
       }
+    },
+    colorBadge(type) {
+      if (type) {
+        return `https://veekun.com/dex/media/types/en/${type}.png`;
+      }
+      return "";
     },
   },
 

@@ -1,12 +1,12 @@
 <template>
   <v-container>
-    <v-row class="mb-n10">
-      <v-col cols="1"> </v-col>
-      <v-col class="d-flex align-center justify-center" cols="4">
+    <v-row class="mb-n16">
+      <v-col class="d-flex align-center justify-center zplus" cols="5">
         <v-text-field
           v-model="search"
           label="Nom du pokémon ou son ID"
           solo
+          dense
           shaped
           hide-details
           :disabled="loading"
@@ -19,17 +19,18 @@
           </template>
         </v-text-field>
       </v-col>
-      <v-col cols="2" class="mt-1">
+      <v-col cols="2" class="mt-1 zplus">
         <v-btn
+          class="white--text"
           @click="findByNameOrID"
-          large
           color="#DC0A2D"
           :loading="loading"
           :disabled="!search"
         >
-          Recherche</v-btn
+          <v-icon>mdi-magnify</v-icon></v-btn
         >
       </v-col>
+      <v-col cols="5"></v-col>
     </v-row>
     <!-- pokedex -->
     <v-row class="d-flex justify-center mb-n14">
@@ -37,10 +38,15 @@
         <div id="pokedex">
           <v-tooltip top color="warning">
             <template v-slot:activator="{ on, attrs }">
-              <div v-bind="attrs" v-on="on" id="close" @click="closePokedex">
-                <v-icon large class="pointer white--text">
-                  mdi-close-circle-outline
-                </v-icon>
+              <div
+                v-bind="attrs"
+                v-on="on"
+                id="closePokedex"
+                @click="closePokedex"
+              >
+                <v-btn icon large class="white--text">
+                  <v-icon> mdi-close-circle-outline </v-icon>
+                </v-btn>
               </div>
             </template>
             <span>Fermer le pokédex</span>
@@ -134,6 +140,18 @@
           <div id="systembar">
             <SystemBar widthBar="318" />
           </div>
+          <div id="evolution" class="d-flex flex-row justify-center">
+            <span v-for="(evolve, index) in evolves" :key="index">
+              <v-img
+                :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evolve.id}.png`"
+                height="35px"
+                width="35px"
+                class="mr-4"
+                :class="evolve.name === pokemon.name ? 'evolutionActive' : ''"
+              >
+              </v-img>
+            </span>
+          </div>
           <div id="pokemonName">
             <h3 class="whiter">{{ firstLetterUpperCase(pokemon.name) }}</h3>
           </div>
@@ -209,7 +227,7 @@
 <script>
 import SystemBar from "./SystemBar.vue";
 import axios from "axios";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
   name: "PokeDex",
   components: {
@@ -224,6 +242,7 @@ export default {
       type1: "",
       type2: "",
     },
+    evolves: [],
     openButtonSound: require("../assets/songs/open_button.wav"),
     openWrongSound: require("../assets/songs/wrong.mp3"),
     openRightSound: require("../assets/songs/right.wav"),
@@ -241,6 +260,9 @@ export default {
     }),
   },
   methods: {
+    ...mapActions({
+      setPokemonResearch: "setPokemonResearch",
+    }),
     findByNameOrID() {
       this.buttonSong();
       const search = this.search.toLowerCase();
@@ -251,6 +273,10 @@ export default {
       if (this.pokemonResearch) {
         parameter = this.pokemonResearch.id;
       }
+      this.$store.commit("setPokemonResearch", null);
+
+      this.evolves = [];
+
       this.pokemon.image =
         "https://thumbs.gfycat.com/DampSpanishCleanerwrasse-size_restricted.gif";
 
@@ -271,6 +297,8 @@ export default {
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/" +
             response.data.id +
             ".png";
+          this.findEvolution(parameter);
+
           this.pokemon.type1 = response.data.types[0].type.name;
           //gérer les pokémons avec 2 types
           if (response.data.types[1]) {
@@ -278,6 +306,7 @@ export default {
           } else {
             this.pokemon.type2 = "";
           }
+
           this.rightSong();
         })
         .catch((err) => {
@@ -291,6 +320,63 @@ export default {
           this.loading = false;
         });
     },
+
+    async findEvolution(parameter) {
+      await axios
+        .get("https://pokeapi.co/api/v2/pokemon-species/" + parameter)
+        .then((response) => {
+          // console.log("reponse", response);
+          const linkEvolution = response.data.evolution_chain.url;
+          // console.log("linkEvolution", linkEvolution);
+          axios
+            .get(linkEvolution)
+            .then((response) => {
+              //evolution 1
+              const idEvolves1 = response.data.chain.species.url;
+              const idEvolves1Split = idEvolves1.split("/");
+              const idEvolves1Final = idEvolves1Split[6];
+              const nameEvolves1 = response.data.chain.species.name;
+              const Evolves1 = {
+                id: idEvolves1Final,
+                name: nameEvolves1,
+              };
+              this.evolves.push(Evolves1);
+
+              //evolution 2
+              const idEvolves2 = response.data.chain.evolves_to[0].species.url;
+              const idEvolves2Split = idEvolves2.split("/");
+              const idEvolves2Final = idEvolves2Split[6];
+              const nameEvolves2 =
+                response.data.chain.evolves_to[0].species.name;
+              const Evolves2 = {
+                id: idEvolves2Final,
+                name: nameEvolves2,
+              };
+              this.evolves.push(Evolves2);
+
+              //evolution 3
+              const idEvolves3 =
+                response.data.chain.evolves_to[0].evolves_to[0].species.url;
+              const idEvolves3Split = idEvolves3.split("/");
+              const idEvolves3Final = idEvolves3Split[6];
+              const nameEvolves3 =
+                response.data.chain.evolves_to[0].evolves_to[0].species.name;
+              const Evolves3 = {
+                id: idEvolves3Final,
+                name: nameEvolves3,
+              };
+              this.evolves.push(Evolves3);
+              console.log("evolves", this.evolves);
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+
     firstLetterUpperCase(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
@@ -303,6 +389,7 @@ export default {
         type1: "",
         type2: "",
       };
+      this.evolves = [];
       this.pokemon.image =
         "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Pokebola-pokeball-png-0.png/800px-Pokebola-pokeball-png-0.png";
       this.message = "";
@@ -399,10 +486,10 @@ export default {
 #pokedex {
   position: relative;
 }
-#close {
+#closePokedex {
   position: absolute;
   top: 72px;
-  left: 492px;
+  left: 485px;
   z-index: 1;
 }
 #reset {
@@ -467,6 +554,17 @@ export default {
   top: 250px;
   left: 597px;
   z-index: 1;
+}
+#evolution {
+  position: absolute;
+  top: 418px;
+  left: 635px;
+  z-index: 1;
+}
+.evolutionActive {
+  border: white 2px solid;
+  border-radius: 15%;
+  transition-duration: 0.4s;
 }
 
 #pokemonId {

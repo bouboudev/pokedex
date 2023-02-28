@@ -24,4 +24,7 @@
 .pointer {
   cursor: pointer;
 }
+.zplus {
+  z-index: 2;
+}
 </style>
