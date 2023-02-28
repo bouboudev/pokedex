@@ -142,14 +142,24 @@
           </div>
           <div id="evolution" class="d-flex flex-row justify-center">
             <span v-for="(evolve, index) in evolves" :key="index">
-              <v-img
-                :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evolve.id}.png`"
-                height="35px"
-                width="35px"
-                class="mr-4"
-                :class="evolve.name === pokemon.name ? 'evolutionActive' : ''"
-              >
-              </v-img>
+              <v-tooltip top color="warning">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-img
+                    :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evolve.id}.png`"
+                    height="35px"
+                    width="35px"
+                    class="mr-4 pointer"
+                    :class="
+                      evolve.name === pokemon.name ? 'evolutionActive' : ''
+                    "
+                    @click="find(evolve.id)"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                  </v-img>
+                </template>
+                {{ evolve.name }}
+              </v-tooltip>
             </span>
           </div>
           <div id="pokemonName">
