@@ -85,7 +85,7 @@
             </v-tooltip>
           </div>
           <div id="pokemon">
-            <a :href="url(pokemon.name)" target="_blank">
+            <a :href="urlPokepedia(pokemon.name)" target="_blank">
               <img :src="pokemon.image" height="170px" />
             </a>
           </div>
@@ -294,7 +294,7 @@ export default {
       await axios
         .get("https://pokeapi.co/api/v2/pokemon/" + parameter)
         .then((response) => {
-          this.url(this.pokemon.name);
+          this.urlPokepedia(this.pokemon.name);
           this.pokemonOrNot = true;
           this.message = "";
           this.stats = response.data.stats;
@@ -427,7 +427,7 @@ export default {
       this.loading = true;
       this.find(Math.floor(Math.random() * 898) + 1);
     },
-    url(name) {
+    urlPokepedia(name) {
       if (name) {
         return `https://www.pokepedia.fr/${name}`;
       }
@@ -580,7 +580,7 @@ export default {
 #pokemonId {
   position: absolute;
   top: 475px;
-  left: 200px;
+  left: 180px;
   border-radius: 7px;
 }
 #btn-random {

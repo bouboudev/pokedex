@@ -18,6 +18,9 @@
           :src="require('@/assets/pokedex_closed.png')"
           width="550"
         >
+          <div v-if="pokemons.length" id="pokemonNearby">
+            <h6>Pokémons à proximité :</h6>
+          </div>
           <div id="pokemonList" class="d-flex flex-column align-end">
             <v-data-table
               :headers="headers"
@@ -53,9 +56,11 @@
                 <v-btn
                   color="gameboydark"
                   @click="pokemonNearby"
+                  rounded
                   x-small
                   class="mt-6 white--text text--lighten-1"
                 >
+                  <v-icon small>mdi-pokemon-go</v-icon>
                   <span class="text-body-2">
                     Rechercher des pokemons à proximité
                   </span>
@@ -194,6 +199,13 @@ export default {
   top: 38px;
   left: 490px;
   z-index: 1;
+}
+#pokemonNearby {
+  position: absolute;
+  top: 145px;
+  left: 235px;
+  z-index: 1;
+  word-spacing: 0.5px;
 }
 .table {
   width: 100%;
