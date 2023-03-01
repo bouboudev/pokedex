@@ -431,7 +431,7 @@ export default {
       if (name) {
         return `https://www.pokepedia.fr/${name}`;
       }
-      return "";
+      return;
     },
     colorBadge(type) {
       if (type) {
