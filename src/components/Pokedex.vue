@@ -84,7 +84,7 @@
               <span>Entendre le pokémon</span>
             </v-tooltip>
           </div>
-          <div id="pokemon">
+          <div id="pokemon" :class="`${pokemon.type1}`">
             <a :href="urlPokepedia(pokemon.name)" target="_blank">
               <img :src="pokemon.image" height="170px" />
             </a>
