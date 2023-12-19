@@ -21,6 +21,27 @@
   background-attachment: fixed;
   word-spacing: -9px;
 }
+
+/* Styles pour les écrans de petite taille (mobile) */
+@media screen and (max-width: 767px) {
+  #app {
+    background-size: cover;
+  }
+}
+
+/* Styles pour les écrans de taille moyenne (tablette, par exemple) */
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  #app {
+    /* Ajoutez vos styles spécifiques à la version tablette ici si nécessaire */
+  }
+}
+
+/* Styles pour les écrans de grande taille (desktop) */
+@media screen and (min-width: 1024px) {
+  #app {
+    /* Ajoutez vos styles spécifiques à la version desktop ici si nécessaire */
+  }
+}
 .pointer {
   cursor: pointer;
 }
