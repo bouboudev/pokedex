@@ -180,8 +180,42 @@ export default {
 #pokedex {
   position: relative;
 }
+/* Styles pour les écrans de petite taille (mobile) */
+@media screen and (max-width: 767px) {
+  #pokedex {
+    width: 100%;
+    height: 100%;
+    /* centrer au millieu de l'ecran parfaitement*/
 
-#pokemonList {
+  }
+  #pokemonList {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 76%;
+    height: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    margin-left: 7.8%;
+    margin-top: 29.4%;
+  }
+}
+
+/* Styles pour les écrans de taille moyenne (tablette, par exemple) */
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  #pokedex {
+    /* Ajoutez vos styles spécifiques à la version tablette ici si nécessaire */
+  }
+}
+
+/* Styles pour les écrans de grande taille (desktop) */
+@media screen and (min-width: 1024px) {
+  #pokedex {
+    /* Ajoutez vos styles spécifiques à la version desktop ici si nécessaire */
+  }
+  #pokemonList {
   position: absolute;
   top: 0;
   left: 0;
@@ -193,6 +227,7 @@ export default {
   border-radius: 10px;
   margin-left: 7.8%;
   margin-top: 29.4%;
+  }
 }
 #openPokedex {
   position: absolute;
