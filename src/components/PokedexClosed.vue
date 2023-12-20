@@ -185,7 +185,6 @@ export default {
   #pokedex {
     width: 100%;
     height: 100%;
-    /* centrer au millieu de l'ecran parfaitement*/
 
   }
   #pokemonList {
@@ -200,6 +199,12 @@ export default {
     border-radius: 10px;
     margin-left: 7.8%;
     margin-top: 29.4%;
+  }
+  #openPokedex {
+  position: absolute;
+  top: 17px;
+  left: 317px;
+  z-index: 1;
   }
 }
 
@@ -228,13 +233,15 @@ export default {
   margin-left: 7.8%;
   margin-top: 29.4%;
   }
-}
-#openPokedex {
+
+  #openPokedex {
   position: absolute;
   top: 38px;
   left: 490px;
   z-index: 1;
+  }
 }
+
 #pokemonNearby {
   position: absolute;
   top: 145px;
