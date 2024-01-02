@@ -63,10 +63,8 @@
             <div class="false"></div>
             <div id="light-false"></div>
           </div>
-          <div id="pokedex-open">
-            <img src="../assets/pokedex.png"/>
-          </div>
-          
+
+          <img src="../assets/pokedex.png" width="1000vh" />
           <div id="cry">
             <v-tooltip top color="warning">
               <template v-slot:activator="{ on, attrs }">
@@ -498,41 +496,6 @@ export default {
 #pokedex {
   position: relative;
 }
-
-/* Styles pour les écrans de petite taille (mobile) */
-@media screen and (max-width: 767px) {
-  #pokedex-open img {
-    width: 55%;
-  }
-}
-
-/* Styles pour les écrans de taille moyenne (tablette, par exemple) */
-@media screen and (min-width: 768px) and (max-width: 1023px) {
-  #pokedex {
-    /* Ajoutez vos styles spécifiques à la version tablette ici si nécessaire */
-  }
-  
-}
-
-/* Styles pour les écrans de grande taille (desktop) */
-@media screen and (min-width: 1024px) {
-  #pokedex {
-    /* Ajoutez vos styles spécifiques à la version desktop ici si nécessaire */
-  }
-
-  #openPokedex {
-  position: absolute;
-  top: 38px;
-  left: 490px;
-  z-index: 1;
-  }
-  #pokedex-open img {
-    width: 157vh;
-  
-  }
-}
-
-
 #closePokedex {
   position: absolute;
   top: 72px;
